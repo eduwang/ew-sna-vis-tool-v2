@@ -25,6 +25,12 @@ export function initAuth() {
   onAuthStateChange((user) => {
     updateUI(user);
   });
+  
+  // 초기 인증 상태 즉시 확인 (배포 환경에서 중요)
+  const currentUser = getCurrentUser();
+  if (currentUser) {
+    updateUI(currentUser);
+  }
 }
 
 /**
