@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>보고서 작성하기 - SNA Visualization Tool v2</title>
+  <link rel="icon" type="image/svg+xml" href="/public/main_header.svg">
+  <link rel="stylesheet" href="/src/styles/network-visualizer.css">
+  <link rel="stylesheet" href="/src/styles/report.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-content">
+        <div class="header-text">
+          <h1>보고서 작성하기</h1>
+          <p>시각화 도구에서 저장한 데이터를 불러와 보고서를 작성합니다.</p>
+        </div>
+        <div class="header-actions">
+          <div id="user-info" class="user-info" style="display: none;">
+            <div class="user-profile">
+              <img src="" alt="프로필" class="user-avatar" style="display: none;">
+              <span class="user-name"></span>
+            </div>
+            <button id="logout-btn" class="btn btn-secondary" style="display: none;">로그아웃</button>
+          </div>
+          <button id="google-login-btn" class="btn">Google로 로그인</button>
+          <a href="index.html" class="btn btn-secondary header-home-btn">홈으로 돌아가기</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- 데이터/보고서 불러오기 섹션 -->
+    <div class="load-section">
+      <div class="load-controls">
+        <button class="btn" id="load-data-btn">데이터 불러오기</button>
+        <button class="btn btn-secondary" id="load-report-btn">보고서 불러오기</button>
+        <button class="btn btn-danger" id="new-report-btn">새로 작성하기</button>
+      </div>
+      <div id="load-status" class="status-message" style="display: none;"></div>
+    </div>
+
+    <!-- 보고서 작성 영역 (데이터 로드 후 표시) -->
+    <div id="report-editor" class="report-editor" style="display: none;">
+      <!-- 상단: 보고서 제목 / 작성자 / 데이터 정보 -->
+      <div class="report-header">
+        <div class="report-meta">
+          <div class="meta-item">
+            <label>보고서 제목</label>
+            <input type="text" id="report-title" placeholder="보고서 제목을 입력하세요" class="form-input">
+          </div>
+          <div class="meta-item">
+            <label>작성자</label>
+            <input type="text" id="report-author" placeholder="작성자 이름" class="form-input">
+          </div>
+          <div class="meta-item">
+            <label>데이터 정보</label>
+            <div id="data-info" class="data-info-text"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 메인 콘텐츠: 그래프 시각화 + 보고서 작성 -->
+      <div class="report-main">
+        <!-- 왼쪽: 그래프 시각화 -->
+        <div class="report-left">
+          <div class="graph-section">
+            <div class="graph-header">
+              <h3>그래프 시각화</h3>
+              <button class="btn btn-small" id="toggle-community-btn">집단 표시</button>
+            </div>
+            <div id="graph-container" class="graph-container">
+              <div id="sigma-container"></div>
+            </div>
+            
+            <!-- 집단 정보 및 중심성 -->
+            <div class="graph-stats">
+              <div class="stat-panel">
+                <h4>집단 정보</h4>
+                <div id="community-info" class="stat-content"></div>
+              </div>
+              <div class="stat-panel">
+                <div class="stat-panel-header">
+                  <h4>중심성 Top 10</h4>
+                  <div class="centrality-sort-buttons">
+                    <button class="btn btn-tiny active" id="sort-by-degree-btn" data-sort="degree">연결</button>
+                    <button class="btn btn-tiny" id="sort-by-eigen-btn" data-sort="eigen" style="display: none;">고유벡터</button>
+                  </div>
+                </div>
+                <div id="centrality-info" class="stat-content"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 오른쪽: 보고서 작성 -->
+        <div class="report-right">
+          <div class="report-form-section">
+            <h3>보고서 작성</h3>
+            <div class="form-group">
+              <label for="report-content">보고서 내용</label>
+              <textarea id="report-content" class="form-textarea" rows="15" placeholder="네트워크 분석 결과를 바탕으로 보고서 내용을 작성하세요..."></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 하단: 종합 해석 / 결론 / 한계 / 추가 질문 -->
+      <div class="report-bottom">
+        <div class="form-group">
+          <label for="report-conclusion">종합 해석 / 결론</label>
+          <textarea id="report-conclusion" class="form-textarea" rows="5" placeholder="분석 결과에 대한 종합적인 해석과 결론을 작성하세요..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="report-limitations">한계점</label>
+          <textarea id="report-limitations" class="form-textarea" rows="3" placeholder="분석의 한계점을 작성하세요..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="report-questions">추가 질문</label>
+          <textarea id="report-questions" class="form-textarea" rows="3" placeholder="추가로 탐색하고 싶은 질문을 작성하세요..."></textarea>
+        </div>
+      </div>
+
+      <!-- 저장 및 다운로드 버튼 -->
+      <div class="report-actions">
+        <button class="btn" id="save-report-btn">보고서 저장</button>
+        <button class="btn btn-secondary" id="download-html-btn">HTML로 다운로드</button>
+      </div>
+    </div>
+
+    <footer>
+      <p>
+        Made by Hyowon Wang 
+        <a href="https://hyowonwang.netlify.app/" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; margin-left: 0.5rem; text-decoration: none; color: var(--panton-blue); transition: opacity 0.2s;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 0.25rem; vertical-align: middle;">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </a>
+      </p>
+    </footer>
+  </div>
+
+  <script type="module" src="/src/scripts/networkAuth.js"></script>
+  <script type="module" src="/src/scripts/makeReport.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+  <script type="module">
+    import { init } from '/src/scripts/networkAuth.js';
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+  
+  <!-- Storage 접근 에러 처리 -->
+  <script>
+    // localStorage 접근 에러를 무시하도록 처리
+    window.addEventListener('error', (event) => {
+      if (event.message && event.message.includes('storage')) {
+        console.warn('Storage 접근 에러 무시:', event.message);
+        event.preventDefault();
+        return false;
+      }
+    });
+    
+    // Promise rejection 처리
+    window.addEventListener('unhandledrejection', (event) => {
+      if (event.reason && event.reason.message && event.reason.message.includes('storage')) {
+        console.warn('Storage 접근 Promise rejection 무시:', event.reason.message);
+        event.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>

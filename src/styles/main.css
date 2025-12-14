@@ -1,0 +1,417 @@
+/* 팬톤 감성의 모던하고 세련된 디자인 */
+:root {
+  --panton-blue: #4A90E2;
+  --panton-blue-light: #6BA3E8;
+  --panton-blue-dark: #357ABD;
+  --panton-gray: #F5F7FA;
+  --panton-gray-dark: #E1E8ED;
+  --panton-text: #2C3E50;
+  --panton-text-light: #7F8C8D;
+  --panton-white: #FFFFFF;
+  --panton-shadow: rgba(0, 0, 0, 0.08);
+  --panton-shadow-hover: rgba(0, 0, 0, 0.12);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  color: var(--panton-text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+  position: relative;
+}
+
+.header-content {
+  position: relative;
+  width: 100%;
+  min-height: 120px; /* 제목 높이를 위한 최소 높이 */
+}
+
+.header-text {
+  text-align: center;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--panton-text);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--panton-text-light);
+  font-weight: 400;
+}
+
+.header-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+
+.user-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--panton-gray-dark);
+}
+
+.user-name {
+  font-weight: 500;
+  color: var(--panton-text);
+  font-size: 0.95rem;
+}
+
+/* 버튼 스타일 (network-visualizer와 동일) */
+.btn {
+  background: linear-gradient(135deg, #4A90E2 0%, #6BA3E8 100%);
+  color: #FFFFFF;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.3px;
+}
+
+.btn:hover {
+  background: linear-gradient(135deg, #357ABD 0%, #4A90E2 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 144, 226, 0.25);
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #E8ECF0 0%, #D1D9E0 100%);
+  color: var(--panton-text);
+  border: 1px solid rgba(44, 62, 80, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #D1D9E0 0%, #C0C7CE 100%);
+  border-color: rgba(44, 62, 80, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  color: var(--panton-text);
+}
+
+.navigation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+  flex: 1;
+}
+
+.nav-card {
+  background: var(--panton-white);
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 4px 12px var(--panton-shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 1px solid transparent;
+}
+
+.nav-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px var(--panton-shadow-hover);
+  border-color: var(--panton-blue-light);
+}
+
+.card-icon {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 1.5rem;
+  filter: grayscale(20%);
+  transition: transform 0.3s ease;
+}
+
+.nav-card:hover .card-icon {
+  transform: scale(1.1);
+}
+
+.nav-card h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--panton-text);
+  margin-bottom: 0.75rem;
+}
+
+.nav-card p {
+  font-size: 0.95rem;
+  color: var(--panton-text-light);
+  line-height: 1.6;
+}
+
+footer {
+  text-align: center;
+  padding: 2rem 0;
+  color: var(--panton-text-light);
+  font-size: 0.9rem;
+  margin-top: auto;
+}
+
+footer a:hover {
+  opacity: 0.7;
+}
+
+footer a svg {
+  transition: transform 0.2s;
+}
+
+footer a:hover svg {
+  transform: scale(1.1);
+}
+
+.patch-notes-link {
+  transition: opacity 0.2s;
+}
+
+.patch-notes-link:hover {
+  opacity: 0.7;
+}
+
+/* Patch Notes 모달 */
+.patch-notes-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 2rem;
+  backdrop-filter: blur(4px);
+}
+
+.patch-notes-modal-content {
+  background: var(--panton-white);
+  border-radius: 12px;
+  max-width: 700px;
+  width: 100%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.patch-notes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 2px solid var(--panton-gray-dark);
+  background: linear-gradient(135deg, #F8F9FA 0%, #E8ECF0 100%);
+}
+
+.patch-notes-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--panton-text);
+  margin: 0;
+}
+
+.patch-notes-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: var(--panton-text-light);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.patch-notes-close:hover {
+  background: var(--panton-gray);
+  color: var(--panton-text);
+}
+
+.patch-notes-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.patch-note-item {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--panton-gray-dark);
+}
+
+.patch-note-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.patch-note-date {
+  font-size: 0.85rem;
+  color: var(--panton-text-light);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.patch-note-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--panton-text);
+  margin-bottom: 1rem;
+}
+
+.patch-note-content {
+  color: var(--panton-text);
+  line-height: 1.8;
+}
+
+.patch-note-content p {
+  margin-bottom: 1rem;
+}
+
+.patch-note-content ul {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.patch-note-content li {
+  margin-bottom: 0.75rem;
+}
+
+.patch-note-content a {
+  color: var(--panton-blue);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.patch-note-content a:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .header-actions {
+    position: static;
+    width: 100%;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+
+  .header-text {
+    text-align: center;
+  }
+
+  header h1 {
+    font-size: 2rem;
+  }
+
+  .navigation-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .nav-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .user-info {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .patch-notes-modal {
+    padding: 1rem;
+  }
+  
+  .patch-notes-modal-content {
+    max-height: 90vh;
+  }
+  
+  .patch-notes-header {
+    padding: 1rem;
+  }
+  
+  .patch-notes-header h2 {
+    font-size: 1.25rem;
+  }
+  
+  .patch-notes-body {
+    padding: 1rem;
+  }
+}
+
+

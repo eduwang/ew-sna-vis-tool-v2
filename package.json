@@ -1,0 +1,28 @@
+{
+  "name": "ew-sna-vis-tool-v2",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "3d-force-graph": "^1.79.0",
+    "file-saver": "^2.0.5",
+    "firebase": "^12.6.0",
+    "graphology": "^0.25.4",
+    "graphology-communities-louvain": "^2.0.2",
+    "graphology-layout": "^0.6.0",
+    "graphology-layout-forceatlas2": "^0.10.1",
+    "graphology-metrics": "^2.0.0",
+    "handsontable": "^14.1.0",
+    "papaparse": "^5.4.1",
+    "sigma": "^2.4.0",
+    "sweetalert2": "^11.10.5"
+  },
+  "devDependencies": {
+    "vite": "^7.2.4"
+  }
+}

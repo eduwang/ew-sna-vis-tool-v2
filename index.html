@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SNA Visualization Tool V2</title>
+  <link rel="icon" type="image/svg+xml" href="/public/main_header.svg">
+  <link rel="stylesheet" href="/src/styles/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-content">
+        <div class="header-text">
+          <h1>SNA Visualization Tool</h1>
+          <p class="subtitle">Social Network Analysis Visualization Platform V2</p>
+        </div>
+        <div class="header-actions">
+          <div id="user-info" class="user-info" style="display: none;">
+            <div class="user-profile">
+              <img src="" alt="프로필" class="user-avatar" style="display: none;">
+              <span class="user-name"></span>
+            </div>
+            <button id="logout-btn" class="btn btn-secondary" style="display: none;">로그아웃</button>
+          </div>
+          <button id="google-login-btn" class="btn">Google로 로그인</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+
+      <div class="navigation-grid">
+        <a href="network-visualizer.html" class="nav-card">
+          <img src="/public/icons/network-visualizer_icon.png" alt="관계망 시각화" class="card-icon">
+          <h2>관계망 시각화 도구</h2>
+          <p>CSV 데이터를 업로드하거나 데이터를 직접 입력하여 네트워크 그래프를 생성하고 분석합니다.</p>
+        </a>
+
+        <a href="network-visualizer-3d.html" class="nav-card">
+          <img src="/public/icons/network-visualizer_icon_3D.png" alt="관계망 시각화(3D)" class="card-icon">
+          <h2>관계망 시각화 도구(3D)</h2>
+          <p>CSV 데이터를 업로드하거나 데이터를 직접 입력하여 네트워크 그래프를 생성하고 분석합니다.</p>
+        </a>
+
+        <a href="make-a-report.html" class="nav-card" style="display: none;">
+          <img src="/public/icons/report.png" alt="보고서 작성하기" class="card-icon">
+          <h2>보고서 작성하기</h2>
+          <p>시각화 도구에서 저장한 데이터를 불러와 보고서를 작성합니다.</p>
+        </a>
+
+        <a href="analyze-with-ai.html" class="nav-card" style="display: none !important;">
+          <img src="/public/icons/withAI.png" alt="AI로 분석하기" class="card-icon">
+          <h2>AI와 함께 분석하기(준비 중)</h2>
+          <p>AI를 활용하여 네트워크 데이터를 심층 분석합니다.</p>
+        </a>
+
+        <a href="admin.html" class="nav-card" style="display: none;">
+          <img src="/public/icons/admin.png" alt="관리자 페이지" class="card-icon">
+          <h2>관리자 페이지</h2>
+          <p>시스템 설정 및 관리 기능을 제공합니다.</p>
+        </a>
+      </div>
+    </main>
+
+    <footer>
+      <p>
+        Made by Hyowon Wang 
+        <a href="https://hyowonwang.netlify.app/" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; margin-left: 0.5rem; text-decoration: none; color: var(--panton-blue); transition: opacity 0.2s;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 0.25rem; vertical-align: middle;">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </a>
+        <span style="margin: 0 0.5rem;">|</span>
+        <button id="patch-notes-btn" class="patch-notes-link" style="background: none; border: none; color: var(--panton-blue); cursor: pointer; text-decoration: underline; font-size: inherit; font-family: inherit; padding: 0;">Patch Notes</button>
+        <span style="margin: 0 0.5rem;">|</span>
+        <span style="font-size: 0.9rem;">
+          Suggestions or feedback: 
+          <a href="mailto:eduwang1010.dev@gmail.com">eduwang1010.dev@gmail.com</a>
+        </span>
+              </p>
+    </footer>
+  </div>
+
+  <!-- Patch Notes 모달 -->
+  <div id="patch-notes-modal" class="patch-notes-modal" style="display: none;">
+    <div class="patch-notes-modal-content">
+      <div class="patch-notes-header">
+        <h2>Patch Notes</h2>
+        <button class="patch-notes-close" id="patch-notes-close">&times;</button>
+      </div>
+      <div class="patch-notes-body">
+        <div class="patch-note-item">
+          <div class="patch-note-date">2025년 12월 14일</div>
+          <div class="patch-note-title">사회관계망 분석도구 V2 공개</div>
+          <div class="patch-note-content">
+            <p>기존 <a href="https://sna-vis-tool.netlify.app/" target="_blank" rel="noopener noreferrer">V1</a>에 비해 다음과 같은 개선사항이 적용되었습니다:</p>
+            <ul>
+              <li><strong>사용성 개선</strong>: 관계망 시각화 도구의 인터페이스와 사용성을 대폭 개선했습니다.</li>
+              <li><strong>3D 시각화</strong>: 3D 관계망 그래프를 그려볼 수 있는 새로운 기능이 추가되었습니다.</li>
+              <li><strong>Google 로그인</strong>: Google 계정으로 로그인하여 관계망 데이터를 저장하고 관리할 수 있습니다.</li>
+              <li><strong>보고서 작성</strong>: 저장된 데이터를 기반으로 분석 보고서를 작성하고 HTML로 다운로드할 수 있습니다.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <script type="module" src="/src/scripts/auth.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+  <script type="module">
+    import { init } from '/src/scripts/auth.js';
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+  
+  <!-- Patch Notes 모달 제어 -->
+  <script>
+    (function() {
+      const patchNotesBtn = document.getElementById('patch-notes-btn');
+      const patchNotesModal = document.getElementById('patch-notes-modal');
+      const patchNotesClose = document.getElementById('patch-notes-close');
+      
+      if (!patchNotesBtn || !patchNotesModal || !patchNotesClose) return;
+      
+      // 모달 열기
+      patchNotesBtn.addEventListener('click', () => {
+        patchNotesModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // 스크롤 방지
+      });
+      
+      // 모달 닫기
+      function closeModal() {
+        patchNotesModal.style.display = 'none';
+        document.body.style.overflow = ''; // 스크롤 복원
+      }
+      
+      patchNotesClose.addEventListener('click', closeModal);
+      
+      // 모달 배경 클릭 시 닫기
+      patchNotesModal.addEventListener('click', (e) => {
+        if (e.target === patchNotesModal) {
+          closeModal();
+        }
+      });
+      
+      // ESC 키로 닫기
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && patchNotesModal.style.display === 'flex') {
+          closeModal();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
