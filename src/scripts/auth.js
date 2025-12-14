@@ -169,12 +169,12 @@ function updateUI(user, retryCount = 0) {
   const userAvatar = userInfo?.querySelector('.user-avatar');
   const userName = userInfo?.querySelector('.user-name');
 
-  // 각 카드 요소 가져오기
-  const networkCard = document.querySelector('a[href="network-visualizer.html"]');
-  const network3DCard = document.querySelector('a[href="network-visualizer-3d.html"]');
-  const reportCard = document.querySelector('a[href="make-a-report.html"]');
-  const aiCard = document.querySelector('a[href="analyze-with-ai.html"]');
-  const adminCard = document.querySelector('a[href="admin.html"]');
+  // 각 카드 요소 가져오기 (id 기반으로 찾기 - 배포 환경 호환성)
+  const networkCard = document.getElementById('nav-card-network');
+  const network3DCard = document.getElementById('nav-card-network-3d');
+  const reportCard = document.getElementById('nav-card-report');
+  const aiCard = document.getElementById('nav-card-ai');
+  const adminCard = document.getElementById('nav-card-admin');
   
   // 필수 요소들이 아직 로드되지 않았으면 재시도
   if (retryCount < MAX_RETRIES && (!networkCard || !reportCard || !adminCard)) {
