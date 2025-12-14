@@ -21,16 +21,20 @@ export function initAuth() {
   
   authInitialized = true;
   
-  // 인증 상태 변경 감지
-  onAuthStateChange((user) => {
+  // 인증 상태 변경 감지 (구독 시 즉시 현재 상태를 콜백으로 호출)
+  const unsubscribe = onAuthStateChange((user) => {
+    console.log('인증 상태 변경:', user ? `로그인됨 (${user.email})` : '로그아웃됨');
     updateUI(user);
   });
   
-  // 초기 인증 상태 즉시 확인 (배포 환경에서 중요)
-  const currentUser = getCurrentUser();
-  if (currentUser) {
-    updateUI(currentUser);
-  }
+  // 추가 안전장치: 약간의 지연 후 다시 확인 (배포 환경에서 네트워크 지연 대비)
+  setTimeout(() => {
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+      console.log('지연 확인: 사용자 로그인 상태 확인됨');
+      updateUI(currentUser);
+    }
+  }, 100);
 }
 
 /**
@@ -154,6 +158,12 @@ function isAdmin(userId) {
  * UI 업데이트 (로그인 상태에 따라)
  */
 function updateUI(user) {
+  // DOM이 준비되지 않았으면 재시도
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => updateUI(user));
+    return;
+  }
+
   const userInfo = document.getElementById('user-info');
   const loginBtn = document.getElementById('google-login-btn');
   const logoutBtn = document.getElementById('logout-btn');
@@ -166,6 +176,14 @@ function updateUI(user) {
   const reportCard = document.querySelector('a[href="make-a-report.html"]');
   const aiCard = document.querySelector('a[href="analyze-with-ai.html"]');
   const adminCard = document.querySelector('a[href="admin.html"]');
+  
+  // 디버깅: 요소를 찾지 못한 경우 로그
+  if (!reportCard) {
+    console.warn('보고서 카드를 찾을 수 없습니다.');
+  }
+  if (!adminCard) {
+    console.warn('관리자 카드를 찾을 수 없습니다.');
+  }
 
   if (user) {
     // 로그인 상태
