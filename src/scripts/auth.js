@@ -156,13 +156,12 @@ function isAdmin(userId) {
 
 /**
  * UI 업데이트 (로그인 상태에 따라)
+ * @param {Object} user - Firebase 사용자 객체 (null이면 로그아웃 상태)
+ * @param {number} retryCount - 재시도 횟수 (내부 사용)
  */
-function updateUI(user) {
-  // DOM이 준비되지 않았으면 재시도
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => updateUI(user));
-    return;
-  }
+function updateUI(user, retryCount = 0) {
+  const MAX_RETRIES = 10;
+  const RETRY_DELAY = 100;
 
   const userInfo = document.getElementById('user-info');
   const loginBtn = document.getElementById('google-login-btn');
@@ -177,12 +176,22 @@ function updateUI(user) {
   const aiCard = document.querySelector('a[href="analyze-with-ai.html"]');
   const adminCard = document.querySelector('a[href="admin.html"]');
   
-  // 디버깅: 요소를 찾지 못한 경우 로그
-  if (!reportCard) {
-    console.warn('보고서 카드를 찾을 수 없습니다.');
+  // 필수 요소들이 아직 로드되지 않았으면 재시도
+  if (retryCount < MAX_RETRIES && (!networkCard || !reportCard || !adminCard)) {
+    setTimeout(() => {
+      updateUI(user, retryCount + 1);
+    }, RETRY_DELAY);
+    return;
   }
-  if (!adminCard) {
-    console.warn('관리자 카드를 찾을 수 없습니다.');
+  
+  // 디버깅: 요소를 찾지 못한 경우 로그 (재시도 후에도 실패한 경우만)
+  if (retryCount >= MAX_RETRIES) {
+    if (!reportCard) {
+      console.warn('보고서 카드를 찾을 수 없습니다. (재시도 실패)');
+    }
+    if (!adminCard) {
+      console.warn('관리자 카드를 찾을 수 없습니다. (재시도 실패)');
+    }
   }
 
   if (user) {
