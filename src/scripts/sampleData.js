@@ -8,33 +8,39 @@ import Papa from 'papaparse';
 export const sampleDataList = [
   {
     id: 'sample-1',
-    name: '마블 영화 배우 네트워크',
-    description: '마블 영화(~2019년)에 출연한 배우들의 네트워크. Chris Evans를 중심으로 같이 출연한 배우들이 서로 함께 출연한 작품의 수를 기준으로 제작된 네트워크입니다.',
+    name: '반 친구 관계망 네트워크',
+    description: '가상의 반을 가정하고, 반에서 친한 친구들 사이를 표현한 네트워크입니다. 우리 반의 소집단은 어떻게 형성되는지, 소외된 친구는 없는지 살펴볼 수 있습니다.',
     filePath: '/sample-data/sample-1.csv'
   },
   {
     id: 'sample-2',
-    name: '시흥 맛집 네트워크',
-    description: '2022년 1년간 \'시흥 맛집\'에 대한 블로그 글을 수집한 다음, 키워드를 추출한 후, 같은 글에 등장한 관계를 표현한 네트워크입니다.',
+    name: '마블 영화 배우 네트워크',
+    description: '마블 영화(~2019년)에 출연한 배우들의 네트워크. Chris Evans를 중심으로 같이 출연한 배우들이 서로 함께 출연한 작품의 수를 기준으로 제작된 네트워크입니다.',
     filePath: '/sample-data/sample-2.csv'
   },
   {
     id: 'sample-3',
-    name: '별 그래프 (Star Graph)',
-    description: '기본적인 별 그래프 구조입니다. 중심 노드를 기준으로 여러 노드가 연결된 형태입니다.',
+    name: '시흥 맛집 네트워크',
+    description: '2022년 1년간 \'시흥 맛집\'에 대한 블로그 글을 수집한 다음, 키워드를 추출한 후, 같은 글에 등장한 관계를 표현한 네트워크입니다.',
     filePath: '/sample-data/sample-3.csv'
   },
   {
     id: 'sample-4',
-    name: '마블 캐릭터 네트워크',
-    description: '마블 원작 만화에서 같은 만화책에 두 캐릭터가 함께 등장하는 횟수를 기준으로 계산된 네트워크입니다.',
+    name: '별 그래프 (Star Graph)',
+    description: '기본적인 별 그래프 구조입니다. 중심 노드를 기준으로 여러 노드가 연결된 형태입니다.',
     filePath: '/sample-data/sample-4.csv'
   },
   {
     id: 'sample-5',
+    name: '마블 캐릭터 네트워크',
+    description: '마블 원작 만화에서 같은 만화책에 두 캐릭터가 함께 등장하는 횟수를 기준으로 계산된 네트워크입니다.',
+    filePath: '/sample-data/sample-5.csv'
+  },
+  {
+    id: 'sample-6',
     name: '왕좌의 게임 등장인물 네트워크',
     description: 'George R. R. Martin의 A Storm of Swords 시리즈에 등장하는 인물들 간의 관계를 분석한 네트워크 데이터입니다. 두 캐릭터의 이름이 소설 내에서 15단어 이내에 몇 번 등장하는지를 기준으로 계산되었습니다.',
-    filePath: '/sample-data/sample-5.csv'
+    filePath: '/sample-data/sample-6.csv'
   }
 ];
 
