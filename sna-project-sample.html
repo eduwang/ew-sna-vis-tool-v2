@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사회 관계망 분석 프로젝트 체험 - SNA Visualization Tool v2</title>
+  <link rel="stylesheet" href="/src/styles/network-visualizer.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script type="module" src="/src/scripts/analytics.js"></script>
+  <style>
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--panton-gray-dark);
+    }
+    .tab {
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--panton-text-light);
+      transition: all 0.2s ease;
+    }
+    .tab:hover {
+      color: var(--panton-text);
+      background: var(--panton-gray);
+    }
+    .tab.active {
+      color: var(--panton-blue);
+      border-bottom-color: var(--panton-blue);
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .help-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      margin-left: 0.5rem;
+      cursor: pointer;
+      color: var(--panton-blue);
+      border: 1px solid var(--panton-blue);
+      border-radius: 50%;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+    }
+    .help-icon:hover {
+      background: var(--panton-blue);
+      color: white;
+    }
+    .help-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      align-items: center;
+      justify-content: center;
+    }
+    .help-modal.active {
+      display: flex;
+    }
+    .help-modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    .help-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .help-modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--panton-text-light);
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .help-modal-close:hover {
+      color: var(--panton-text);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-content">
+        <div class="header-text">
+          <h1>
+            사회 관계망 분석 프로젝트 체험
+            <span class="help-icon" id="help-icon" title="사용 방법">?</span>
+          </h1>
+          <p>간단한 설문 결과를 바탕으로 사회 관계망 분석을 어떻게 적용할 수 있는지 체험할 수 있습니다.</p>
+        </div>
+        <div class="header-actions">
+          <div id="user-info" class="user-info" style="display: none;">
+            <div class="user-profile">
+              <img src="" alt="프로필" class="user-avatar" style="display: none;">
+              <span class="user-name"></span>
+            </div>
+            <button id="logout-btn" class="btn btn-secondary" style="display: none;">로그아웃</button>
+          </div>
+          <button id="google-login-btn" class="btn">Google로 로그인</button>
+          <a href="index.html" class="btn btn-secondary header-home-btn">홈으로 돌아가기</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- 탭 네비게이션 -->
+    <div class="tabs">
+      <button class="tab active" data-tab="input">설문 데이터 입력</button>
+      <button class="tab" data-tab="visualization">관계망 그래프 그리기</button>
+    </div>
+
+    <!-- 탭 1: 설문 데이터 입력 -->
+    <div id="tab-input" class="tab-content active">
+      <div class="main-content">
+        <!-- 왼쪽: 설문 데이터 입력 -->
+        <div class="grid-item top-left">
+          <div class="table-container">
+            <div class="table-header">
+              <h3>설문 데이터 입력</h3>
+              <div class="header-right">
+                <span id="data-count" class="data-count"></span>
+              </div>
+            </div>
+            <div class="table-controls">
+              <button class="btn btn-small" id="add-row-btn">행 추가</button>
+              <button class="btn btn-small btn-secondary" id="remove-row-btn">행 삭제</button>
+              <button class="btn btn-small btn-secondary" id="reset-btn">초기화</button>
+            </div>
+            <div id="handsontable-container"></div>
+          </div>
+        </div>
+
+        <!-- 오른쪽: 관계망 데이터 생성 -->
+        <div class="grid-item top-right">
+          <div class="graph-section">
+            <h3>관계망 데이터 생성</h3>
+            <div class="button-group" style="margin-bottom: 1rem;">
+              <button class="btn" id="generate-name-network-btn">이름 관계망 데이터 생성</button>
+              <button class="btn" id="generate-element-network-btn">요소 관계망 데이터 생성</button>
+            </div>
+            <div id="network-data-display" style="display: none;">
+              <h4 style="margin-bottom: 0.5rem;">생성된 관계망 데이터</h4>
+              <p style="font-size: 0.85rem; color: var(--panton-text-light); margin-bottom: 0.5rem;">
+                우선, 생성된 데이터를 탐색해 봅시다. 관계망 그래프 그리기에서 데이터를 수정하거나 삭제하여 그래프를 조정할 수 있습니다. 
+              </p>
+              <div id="network-handsontable-container"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 탭 2: 관계망 그래프 그리기 -->
+    <div id="tab-visualization" class="tab-content">
+      <div class="main-content">
+        <!-- 왼쪽 위: 선분 데이터 입력 -->
+        <div class="grid-item top-left">
+          <div class="table-container">
+            <div class="table-header">
+              <h3>선분 데이터</h3>
+              <div class="header-right">
+                <span id="edge-data-count" class="data-count"></span>
+              </div>
+            </div>
+            <div class="table-controls">
+              <button class="btn btn-small" id="add-edge-row-btn">행 추가</button>
+              <button class="btn btn-small btn-secondary" id="remove-edge-row-btn">행 삭제</button>
+            </div>
+            <div id="edge-handsontable-container"></div>
+          </div>
+        </div>
+
+        <!-- 오른쪽 위: 그래프 시각화 -->
+        <div class="grid-item top-right">
+          <div class="graph-section">
+            <h3>그래프 시각화</h3>
+            <button class="btn" id="draw-graph-btn">그래프 그리기</button>
+            <div id="error-display" class="status-message error" style="display: none; visibility: hidden;"></div>
+            <div id="graph-display">
+              <div id="sigma-container"></div>
+            </div>
+            <div class="graph-controls">
+              <button class="btn btn-secondary" id="full-screen-button" style="display: none;">전체화면</button>
+              <button class="btn btn-secondary" id="save-as-png" style="display: none;">PNG로 저장</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 왼쪽 아래: 집단 찾기 -->
+        <div class="grid-item bottom-left" style="display: none;">
+          <div id="additional-contents" class="additional-section" style="display: none;">
+            <div class="control-panel">
+              <h4>집단 찾기</h4>
+              <p class="section-description">Louvain 알고리즘을 사용하여 네트워크의 커뮤니티를 감지합니다.</p>
+              <div class="button-group">
+                <button class="btn btn-small" id="com-detect-on">집단 찾기</button>
+                <button class="btn btn-small btn-secondary" id="com-detect-off" style="display: none;">집단 찾기 해제</button>
+                <button class="btn btn-small" id="com-label" style="display: none;">집단 라벨 표시</button>
+                <button class="btn btn-small btn-tertiary" id="com-increase" style="display: none;">집단 수 +</button>
+                <button class="btn btn-small btn-tertiary" id="com-decrease" style="display: none;">집단 수 -</button>
+              </div>
+            </div>
+            <div class="data-panel">
+              <div id="community-table-panel" style="display: none;">
+                <h5>집단 목록</h5>
+                <table id="community-table">
+                  <thead>
+                    <tr>
+                      <th>집단 ID</th>
+                      <th>노드</th>
+                    </tr>
+                  </thead>
+                  <tbody id="community-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 오른쪽 아래: 중심성 계산 -->
+        <div class="grid-item bottom-right" style="display: none;">
+          <div id="additional-contents-centrality" class="additional-section" style="display: none;">
+            <div class="control-panel">
+              <h4>중심성 계산</h4>
+              <p class="section-description">노드의 연결 중심성(Degree)과 고유벡터 중심성(Eigenvector)을 계산합니다.</p>
+              <div class="button-group">
+                <button class="btn btn-small" id="compute-cen">중심성 계산</button>
+                <button class="btn btn-small btn-secondary" id="sort-by-degree" style="display: none;">연결 중심성 정렬</button>
+                <button class="btn btn-small btn-secondary" id="sort-by-eigen" style="display: none;">고유벡터 중심성 정렬</button>
+              </div>
+            </div>
+            <div class="data-panel">
+              <div id="centrality-table-panel" style="display: none;">
+                <h5>중심성 결과</h5>
+                <table id="centrality-table">
+                  <thead>
+                    <tr>
+                      <th>노드</th>
+                      <th>연결 중심성</th>
+                      <th>고유벡터 중심성</th>
+                    </tr>
+                  </thead>
+                  <tbody id="centrality-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>
+        Made by Hyowon Wang 
+        <a href="https://hyowonwang.netlify.app/" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; margin-left: 0.5rem; text-decoration: none; color: var(--panton-blue); transition: opacity 0.2s;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 0.25rem; vertical-align: middle;">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </a>
+      </p>
+    </footer>
+  </div>
+
+  <!-- 사용 방법 모달 -->
+  <div id="help-modal" class="help-modal">
+    <div class="help-modal-content">
+      <div class="help-modal-header">
+        <h2>사용 방법</h2>
+        <button class="help-modal-close" id="help-modal-close">&times;</button>
+      </div>
+      <div style="line-height: 1.8;">
+        <h3 style="margin-bottom: 0.75rem; color: var(--panton-blue);">1. 설문 데이터 입력</h3>
+        <p style="margin-bottom: 1.5rem; color: var(--panton-text-light); font-size: 0.95rem;">
+            이름과 다지선다형 설문(복수 선택 가능)을 실시한 후,
+            왼쪽 테이블에 이름과 각 응답자가 선택한 설문 요소를 입력하세요.
+            설문 결과는 하나의 셀에 여러 요소를 입력하며,
+            각 요소는 쉼표(,) 로 구분합니다.
+            <strong>예:</strong> "영화, 음악, 독서"
+        </p>
+        
+        <h3 style="margin-bottom: 0.75rem; color: var(--panton-blue);">2. 관계망 데이터 생성</h3>
+        <p style="margin-bottom: 1.5rem; color: var(--panton-text-light); font-size: 0.95rem;">
+          <strong>이름 관계망:</strong> 각 사람의 설문 결과를 바탕으로 자카드 유사도를 계산하여 사람들 간의 유사도를 측정합니다.<br>
+          <strong>요소 관계망:</strong> 설문 결과의 각 요소들이 함께 나타나는 빈도(공출현)를 바탕으로 요소들 간의 관계를 측정합니다.<br>
+          생성된 데이터는 수정하거나 삭제하여 그래프를 조정할 수 있습니다.
+        </p>
+        
+        <h3 style="margin-bottom: 0.75rem; color: var(--panton-blue);">3. 관계망 그래프 그리기</h3>
+        <p style="margin-bottom: 1.5rem; color: var(--panton-text-light); font-size: 0.95rem;">
+          "관계망 그래프 그리기" 탭으로 이동하여 생성된 관계망 데이터를 시각화합니다.<br>
+          <strong>집단 찾기:</strong> Louvain 알고리즘을 사용하여 네트워크의 커뮤니티를 감지합니다.<br>
+          <strong>중심성 계산:</strong> 노드의 연결 중심성과 고유벡터 중심성을 계산합니다.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/scripts/networkAuth.js"></script>
+  <script type="module" src="/src/scripts/snaProjectSample.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+  <script type="module">
+    import { init } from '/src/scripts/networkAuth.js';
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+  
+  <!-- Storage 접근 에러 처리 -->
+  <script>
+    window.addEventListener('error', (event) => {
+      if (event.message && event.message.includes('storage')) {
+        console.warn('Storage 접근 에러 무시:', event.message);
+        event.preventDefault();
+        return false;
+      }
+    });
+    
+    window.addEventListener('unhandledrejection', (event) => {
+      if (event.reason && event.reason.message && event.reason.message.includes('storage')) {
+        console.warn('Storage 접근 Promise rejection 무시:', event.reason.message);
+        event.preventDefault();
+      }
+    });
+
+    // 탭 전환 기능
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetTab = tab.getAttribute('data-tab');
+        
+        // 모든 탭 비활성화
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        // 선택된 탭 활성화
+        tab.classList.add('active');
+        document.getElementById(`tab-${targetTab}`).classList.add('active');
+      });
+    });
+
+    // 사용 방법 모달
+    const helpIcon = document.getElementById('help-icon');
+    const helpModal = document.getElementById('help-modal');
+    const helpModalClose = document.getElementById('help-modal-close');
+    
+    if (helpIcon) {
+      helpIcon.addEventListener('click', () => {
+        helpModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+    }
+    
+    if (helpModalClose) {
+      helpModalClose.addEventListener('click', () => {
+        helpModal.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    }
+    
+    helpModal.addEventListener('click', (e) => {
+      if (e.target === helpModal) {
+        helpModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && helpModal.classList.contains('active')) {
+        helpModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+  </script>
+</body>
+</html>

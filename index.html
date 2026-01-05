@@ -48,6 +48,16 @@
           <p>CSV 데이터를 업로드하거나 데이터를 직접 입력하여 네트워크 그래프를 생성하고 분석합니다.</p>
         </a>
 
+        <a href="sna-project-sample.html" id="nav-card-sample" class="nav-card">
+          <svg class="card-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 12px;">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="white" opacity="0.9"/>
+            <path d="M2 17L12 22L22 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M2 12L12 17L22 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+          <h2>SNA 프로젝트 체험</h2>
+          <p>간단한 설문 결과를 바탕으로 사회 관계망 분석을 어떻게 적용할 수 있는지 체험할 수 있습니다.</p>
+        </a>
+
         <a href="make-a-report.html" id="nav-card-report" class="nav-card" style="display: none;">
           <img src="/public/icons/report.png" alt="보고서 작성하기" class="card-icon">
           <h2>보고서 작성하기</h2>
@@ -98,9 +108,24 @@
       </div>
       <div class="patch-notes-body">
         <div class="patch-note-item">
-          <div class="patch-note-date">2025년 12월 14일</div>
-          <div class="patch-note-title">사회관계망 분석도구 V2 공개</div>
+          <div class="patch-note-date">2025년 1월 15일</div>
+          <div class="patch-note-title">사회 관계망 분석 프로젝트 체험 기능 추가</div>
           <div class="patch-note-content">
+            <p>데이터 과학 프로젝트의 예시로 사회 관계망 분석 프로젝트 체험이 추가되었습니다:</p>
+            <ul>
+              <li><strong>사회 관계망 분석 프로젝트 체험</strong>: 간단한 설문 결과를 바탕으로 사회 관계망 분석을 어떻게 적용할 수 있는지 체험할 수 있는 기능이 추가되었습니다(로그인 없이 사용 가능!).</li>
+              <li>설문 데이터를 입력하고 자카드 유사도 기반 이름 관계망 또는 공출현 기반 요소 관계망을 생성할 수 있습니다.</li>
+              <li>생성된 관계망 데이터를 수정하고 그래프로 시각화하며, 집단 찾기와 중심성 계산 기능을 사용할 수 있습니다.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="patch-note-item">
+          <div class="patch-note-date" style="cursor: pointer; user-select: none;" onclick="togglePatchNote(this)">
+            <span>2025년 12월 14일</span>
+            <span style="margin-left: 0.5rem; font-size: 0.9em;">▼</span>
+          </div>
+          <div class="patch-note-title" style="display: none;">사회관계망 분석도구 V2 공개</div>
+          <div class="patch-note-content" style="display: none;">
             <p>기존 <a href="https://sna-vis-tool.netlify.app/" target="_blank" rel="noopener noreferrer">V1</a>에 비해 다음과 같은 개선사항이 적용되었습니다:</p>
             <ul>
               <li><strong>사용성 개선</strong>: 관계망 시각화 도구의 인터페이스와 사용성을 대폭 개선했습니다.</li>
@@ -164,6 +189,21 @@
         }
       });
     })();
+    
+    // Patch Note 드롭다운 토글 함수
+    function togglePatchNote(dateElement) {
+      const patchNoteItem = dateElement.closest('.patch-note-item');
+      const title = patchNoteItem.querySelector('.patch-note-title');
+      const content = patchNoteItem.querySelector('.patch-note-content');
+      const arrow = dateElement.querySelector('span:last-child');
+      
+      if (title && content) {
+        const isHidden = title.style.display === 'none';
+        title.style.display = isHidden ? 'block' : 'none';
+        content.style.display = isHidden ? 'block' : 'none';
+        arrow.textContent = isHidden ? '▲' : '▼';
+      }
+    }
   </script>
 </body>
 </html>

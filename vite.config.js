@@ -11,6 +11,7 @@ export default defineConfig({
         main: './index.html',
         networkVisualizer: './network-visualizer.html',
         networkVisualizer3d: './network-visualizer-3d.html',
+        snaProjectSample: './sna-project-sample.html',
         makeReport: './make-a-report.html',
         analyzeWithAI: './analyze-with-ai.html',
         admin: './admin.html'
